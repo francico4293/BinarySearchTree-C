@@ -20,6 +20,21 @@ struct nodeBST {
 };
 
 /**
+ * @brief Performs an in order traversal of the binary tree and prints
+ * the values of each node based on this tree traversal
+ * 
+ * @param root The address of the root of the binary tree or subtree to
+ * start the in order traversal from
+ */
+void inOrderTraversal(struct nodeBST *root) {
+    if (root) {
+        inOrderTraversal(root->leftChild);
+        inOrderTraversal(root->rightChild);
+        printf("%d - ", root->value);
+    }
+}
+
+/**
  * @brief Initializes a binary search tree by creating a root node with the
  * specified value
  * 
@@ -45,6 +60,9 @@ int main(void) {
 
     // initialize binary search tree
     root = initBST(50);
+
+    printf("In order traversal: ");
+    inOrderTraversal(root);
 
     return 0;
 }

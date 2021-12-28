@@ -28,9 +28,9 @@ struct nodeBST {
  */
 void inOrderTraversal(struct nodeBST *root) {
     if (root) {
-        inOrderTraversal(root->leftChild);
-        inOrderTraversal(root->rightChild);
-        printf("%d - ", root->value);
+        inOrderTraversal(root->leftChild);  // move to left subtree
+        inOrderTraversal(root->rightChild);  // move to right subtree
+        printf("%d - ", root->value);  // process node
     }
 }
 
@@ -50,6 +50,30 @@ struct nodeBST * initBST(int value) {
     return nodePtr;
 }
 
+void addNode(int value, struct nodeBST *root) {
+    struct nodeBST *prevNode = NULL;
+    struct nodeBST *currNode = root;
+    struct nodeBST node = {.value=value, .leftChild=NULL, .rightChild=NULL};
+    struct nodeBST *nodePtr = (struct nodeBST*) malloc(sizeof(struct nodeBST));
+
+    *nodePtr = node;
+
+    while (currNode) {
+        prevNode = currNode;
+        if (value < currNode->value) {
+            currNode = currNode->leftChild;
+        } else {
+            currNode = currNode->rightChild;
+        }
+    }
+
+    if (value < prevNode->value) {
+        prevNode->leftChild = nodePtr;
+    } else {
+        prevNode->rightChild = nodePtr;
+    }
+}
+
 /**
  * @brief Driver code for the binary search tree implementation
  * 
@@ -60,6 +84,13 @@ int main(void) {
 
     // initialize binary search tree
     root = initBST(50);
+
+    printf("In order traversal: ");
+    inOrderTraversal(root);
+    printf("\n");
+
+    addNode(30, root);
+    addNode(70, root);
 
     printf("In order traversal: ");
     inOrderTraversal(root);

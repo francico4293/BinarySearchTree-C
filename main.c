@@ -97,26 +97,31 @@ void addNode(int value, struct nodeBST *root) {
 }
 
 /**
- * @brief 
+ * @brief Finds the in order successor to the provided node
  * 
- * @param node 
- * @return struct nodeBST* 
+ * @param node The address of the node to find the in order successor
+ * to
+ * @return struct nodeBST* The address of the in order successor
  */
 struct nodeBST * findInOrderSuccessor(struct nodeBST *node) {
+    // declare and initialize prevNode and currNode
     struct nodeBST *prevNode = NULL;
     struct nodeBST *currNode = node->rightChild;
 
+    // if no left child to currNode, then currNode is in order successor
     if (!currNode->leftChild) {
         return currNode;
     }
 
+    // find the leftmost node in the right subtree
     while (currNode->leftChild) {
         prevNode = currNode;
         currNode = currNode->leftChild;
     }
 
+    // link prevNode left child to currNode right child if there is one
     prevNode->leftChild = currNode->rightChild;
-    return currNode;
+    return currNode;  // return in order successor to provided node
 }
 
 /**
@@ -201,15 +206,20 @@ void removeNode(int value, struct nodeBST *root) {
 
     // the specified value is a node with a left and right child
     struct nodeBST *inOrderSuccessor = findInOrderSuccessor(currNode);
+
+    // in order successor is the right child
     if (inOrderSuccessor == currNode->rightChild) {
+        // check if the currNode is the left child of prevNode
         if (prevNode->leftChild && prevNode->leftChild == currNode) {
             prevNode->leftChild = inOrderSuccessor;
             inOrderSuccessor->leftChild = currNode->leftChild;
+        // check if the currNode is the right child of prevNode
         } else {
             prevNode->rightChild = inOrderSuccessor;
             inOrderSuccessor->leftChild = currNode->leftChild;
         }
 
+        // free currNode from memory
         free(currNode);
         currNode = NULL;
 

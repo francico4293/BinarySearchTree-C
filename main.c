@@ -20,6 +20,21 @@ struct nodeBST {
 };
 
 /**
+ * @brief Performs a pre-order traversal of the binary tree and prints
+ * the values of each node based on this tree traversal
+ * 
+ * @param root The address of the root of the binary tree or subtree to
+ * start the pre-order traversal from
+ */
+void preOrderTraversal(struct nodeBST *root) {
+    if (root) {
+        printf("%d - ", root->value);
+        preOrderTraversal(root->leftChild);
+        preOrderTraversal(root->rightChild);
+    }
+}
+
+/**
  * @brief Performs an in order traversal of the binary tree and prints
  * the values of each node based on this tree traversal
  * 
@@ -29,8 +44,8 @@ struct nodeBST {
 void inOrderTraversal(struct nodeBST *root) {
     if (root) {
         inOrderTraversal(root->leftChild);  // move to left subtree
-        inOrderTraversal(root->rightChild);  // move to right subtree
         printf("%d - ", root->value);  // process node
+        inOrderTraversal(root->rightChild);  // move to right subtree
     }
 }
 
@@ -50,6 +65,13 @@ struct nodeBST * initBST(int value) {
     return nodePtr;
 }
 
+/**
+ * @brief Adds a new node to the binary search tree
+ * 
+ * @param value The value of the node to be added
+ * @param root The address of the root of the binary tree or subtree to
+ * start the in order traversal from
+ */
 void addNode(int value, struct nodeBST *root) {
     struct nodeBST *prevNode = NULL;
     struct nodeBST *currNode = root;
@@ -75,6 +97,53 @@ void addNode(int value, struct nodeBST *root) {
 }
 
 /**
+ * @brief Removes the first node with the specified value from the BST
+ * 
+ * @param value The value of the node to remove
+ * @param root The address of the root of the binary tree or subtree to
+ * start the in order traversal from
+ */
+void removeNode(int value, struct nodeBST *root) {
+    struct nodeBST *prevNode = NULL;
+    struct nodeBST *currNode = root;
+
+    // traverse the BST until a node with the correct value is found or
+    // until all appropriate nodes have been searched
+    while (currNode && currNode->value != value) {
+        prevNode = currNode;
+        // traverse left
+        if (value < currNode->value) {
+            currNode = currNode->leftChild;
+        // traverse right
+        } else {
+            currNode = currNode->rightChild;
+        }
+    }
+
+    // the specified value doesn't exist in the BST
+    if (!currNode) {
+        return;  // exit the function
+    }
+
+    // the specified value is a leaf node
+    if (!currNode->leftChild && !currNode->rightChild) {
+        // check if currNode is the left child of prevNode
+        if (prevNode->leftChild && prevNode->leftChild == currNode) {
+            prevNode->leftChild = NULL;
+        // check if currNode is the right child of prevNode
+        } else {
+            prevNode->rightChild = NULL;
+        }
+
+        // free currNode from memory
+        free(currNode);
+        currNode = NULL;
+
+        return;  // exit the function
+    }
+}
+
+/**
  * @brief Driver code for the binary search tree implementation
  * 
  * @return int 
@@ -91,7 +160,22 @@ int main(void) {
 
     addNode(30, root);
     addNode(70, root);
+    addNode(20, root);
+    addNode(40, root);
+    addNode(60, root);
+    addNode(80, root);
 
+    printf("In order traversal: ");
+    inOrderTraversal(root);
+
+    printf("\n");
+
+    printf("Pre-order traversal: ");
+    preOrderTraversal(root);
+
+    printf("\n");
+    
+    removeNode(40, root);
     printf("In order traversal: ");
     inOrderTraversal(root);
 

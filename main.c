@@ -96,6 +96,10 @@ void addNode(int value, struct nodeBST *root) {
     }
 }
 
+struct nodeBST * findInOrderSuccessor() {
+
+}
+
 /**
  * @brief Removes the first node with the specified value from the BST
  * 
@@ -141,6 +145,40 @@ void removeNode(int value, struct nodeBST *root) {
 
         return;  // exit the function
     }
+
+    // the specified value only has a left child
+    if (currNode->leftChild && !currNode->rightChild) {
+        // check if currNode is the left child of prevNode
+        if (prevNode->leftChild && prevNode->leftChild == currNode) {
+            prevNode->leftChild = currNode->leftChild;
+        // check if currNode is the right child of prevNode
+        } else {
+            prevNode->rightChild = currNode->leftChild;
+        }
+
+        // free currNode from memory
+        free(currNode);
+        currNode = NULL;
+
+        return;  // exit the function
+    }
+
+    // the specified value only has a right child
+    if (currNode->rightChild && !currNode->leftChild) {
+        // check if the currNode is the left child of prevNode
+        if (prevNode->leftChild && prevNode->leftChild == currNode) {
+            prevNode->leftChild = currNode->rightChild;
+        // check if the currNode is the right child of prevNode
+        } else {
+            prevNode->rightChild = currNode->rightChild;
+        }
+
+        // free currNode from memory
+        free(currNode);
+        currNode = NULL;
+
+        return;  // exit the function
+    }
 }
 
 /**
@@ -161,7 +199,7 @@ int main(void) {
     addNode(30, root);
     addNode(70, root);
     addNode(20, root);
-    addNode(40, root);
+    // addNode(40, root);
     addNode(60, root);
     addNode(80, root);
 
@@ -175,7 +213,7 @@ int main(void) {
 
     printf("\n");
     
-    removeNode(40, root);
+    removeNode(30, root);
     printf("In order traversal: ");
     inOrderTraversal(root);
 

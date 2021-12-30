@@ -96,8 +96,27 @@ void addNode(int value, struct nodeBST *root) {
     }
 }
 
-struct nodeBST * findInOrderSuccessor() {
+/**
+ * @brief 
+ * 
+ * @param node 
+ * @return struct nodeBST* 
+ */
+struct nodeBST * findInOrderSuccessor(struct nodeBST *node) {
+    struct nodeBST *prevNode = NULL;
+    struct nodeBST *currNode = node->rightChild;
 
+    if (!currNode->leftChild) {
+        return currNode;
+    }
+
+    while (currNode->leftChild) {
+        prevNode = currNode;
+        currNode = currNode->leftChild;
+    }
+
+    prevNode->leftChild = currNode->rightChild;
+    return currNode;
 }
 
 /**
@@ -179,6 +198,35 @@ void removeNode(int value, struct nodeBST *root) {
 
         return;  // exit the function
     }
+
+    // the specified value is a node with a left and right child
+    struct nodeBST *inOrderSuccessor = findInOrderSuccessor(currNode);
+    if (inOrderSuccessor == currNode->rightChild) {
+        if (prevNode->leftChild && prevNode->leftChild == currNode) {
+            prevNode->leftChild = inOrderSuccessor;
+            inOrderSuccessor->leftChild = currNode->leftChild;
+        } else {
+            prevNode->rightChild = inOrderSuccessor;
+            inOrderSuccessor->leftChild = currNode->leftChild;
+        }
+
+        free(currNode);
+        currNode = NULL;
+
+        return;  // exit the function
+    }
+
+    if (prevNode->leftChild && prevNode->leftChild == currNode) {
+        prevNode->leftChild = inOrderSuccessor;
+        
+    } else {
+        prevNode->rightChild = inOrderSuccessor;
+    }
+    inOrderSuccessor->leftChild = currNode->leftChild;
+    inOrderSuccessor->rightChild = currNode->rightChild;
+
+    free(currNode);
+    currNode = NULL;
 }
 
 /**
@@ -199,9 +247,13 @@ int main(void) {
     addNode(30, root);
     addNode(70, root);
     addNode(20, root);
-    // addNode(40, root);
+    addNode(40, root);
     addNode(60, root);
     addNode(80, root);
+    addNode(38, root);
+    addNode(35, root);
+    addNode(32, root);
+    addNode(33, root);
 
     printf("In order traversal: ");
     inOrderTraversal(root);
@@ -216,6 +268,9 @@ int main(void) {
     removeNode(30, root);
     printf("In order traversal: ");
     inOrderTraversal(root);
+    printf("\n");
+    printf("Pre-order traversal: ");
+    preOrderTraversal(root);
 
     return 0;
 }
